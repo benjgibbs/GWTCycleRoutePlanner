@@ -1,0 +1,137 @@
+diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/DirectionsRequest.java
+--- a/src/com/google/gwt/maps/client/directions/DirectionsRequest.java	Tue May 11 13:44:12 2010 +0530
++++ b/src/com/google/gwt/maps/client/directions/DirectionsRequest.java	Sat Jan 07 20:20:56 2012 +0000
+@@ -67,7 +67,7 @@
+   }
+ 
+   @Override
+-  public String getUnitSystem() {
++  public int getUnitSystem() {
+     return DirectionsRequestImpl.impl.getUnitSystem(jso);
+   }
+ 
+@@ -122,7 +122,7 @@
+   }
+ 
+   @Override
+-  public void setUnitSystem(String unitSystem) {
++  public void setUnitSystem(int unitSystem) {
+     DirectionsRequestImpl.impl.setUnitSystem(jso, unitSystem);
+   }
+ 
+diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/DirectionsTravelMode.java
+--- a/src/com/google/gwt/maps/client/directions/DirectionsTravelMode.java	Tue May 11 13:44:12 2010 +0530
++++ b/src/com/google/gwt/maps/client/directions/DirectionsTravelMode.java	Sat Jan 07 20:20:56 2012 +0000
+@@ -24,12 +24,12 @@
+   
+   @Override
+   public native String Driving() /*-{
+-    return $wnd.google.maps.DirectionsTravelMode.DRIVING;
++    return $wnd.google.maps.TravelMode.DRIVING;
+   }-*/;
+ 
+   @Override
+   public native String Walking() /*-{
+-    return $wnd.google.maps.DirectionsTravelMode.WALKING;
++    return $wnd.google.maps.TravelMode.WALKING;
+   }-*/;
+ 
+ }
+diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/DirectionsUnitSystem.java
+--- a/src/com/google/gwt/maps/client/directions/DirectionsUnitSystem.java	Tue May 11 13:44:12 2010 +0530
++++ b/src/com/google/gwt/maps/client/directions/DirectionsUnitSystem.java	Sat Jan 07 20:20:56 2012 +0000
+@@ -23,13 +23,13 @@
+ public class DirectionsUnitSystem implements HasDirectionsUnitSystem {
+   
+   @Override
+-  public native String Imperial() /*-{
+-    return "IMPERIAL"; // $wnd.google.maps.DirectionsUnitSystem.IMPERIAL;
++  public native int Imperial() /*-{
++    return $wnd.google.maps.UnitSystem.IMPERIAL;
+   }-*/;
+ 
+   @Override
+-  public native String Metric() /*-{
+-    return "METRIC"; // $wnd.google.maps.DirectionsUnitSystem.METRIC;
++  public native int Metric() /*-{
++    return $wnd.google.maps.UnitSystem.METRIC;
+   }-*/;
+ 
+ }
+diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/HasDirectionsRequest.java
+--- a/src/com/google/gwt/maps/client/directions/HasDirectionsRequest.java	Tue May 11 13:44:12 2010 +0530
++++ b/src/com/google/gwt/maps/client/directions/HasDirectionsRequest.java	Sat Jan 07 20:20:56 2012 +0000
+@@ -54,7 +54,7 @@
+ 
+   public String getTravelMode();
+ 
+-  public String getUnitSystem();
++  public int getUnitSystem();
+ 
+   public List<HasDirectionsWaypoint> getWaypoints();
+ 
+@@ -101,7 +101,7 @@
+    * Preferred unit system to use when displaying distance. Defaults to the unit
+    * system used in the country of origin.
+    */
+-  public void setUnitSystem(String unitSystem);
++  public void setUnitSystem(int unitSystem);
+ 
+   /**
+    * Array of intermediate waypoints. Directions will be calculated from the
+diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/HasDirectionsUnitSystem.java
+--- a/src/com/google/gwt/maps/client/directions/HasDirectionsUnitSystem.java	Tue May 11 13:44:12 2010 +0530
++++ b/src/com/google/gwt/maps/client/directions/HasDirectionsUnitSystem.java	Sat Jan 07 20:20:56 2012 +0000
+@@ -25,12 +25,12 @@
+    * Specifies that distances in the DirectionsResult should be expressed in
+    * imperial units.
+    */
+-  public String Imperial();
++  public int Imperial();
+ 
+   /**
+    * Specifies that distances in the DirectionsResult should be expressed in
+    * metric units.
+    */
+-  public String Metric();
++  public int Metric();
+ 
+ }
+diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/impl/DirectionsRequestImpl.java
+--- a/src/com/google/gwt/maps/client/directions/impl/DirectionsRequestImpl.java	Tue May 11 13:44:12 2010 +0530
++++ b/src/com/google/gwt/maps/client/directions/impl/DirectionsRequestImpl.java	Sat Jan 07 20:20:56 2012 +0000
+@@ -49,13 +49,14 @@
+ 
+   @FieldName("provideRouteAlternatives")
+   public boolean isProvideRouteAlternatives(JavaScriptObject jso);
+-
++  
++  @FieldName("unitSystem")
++  public int getUnitSystem(JavaScriptObject jso);
++  
+   public String getRegion(JavaScriptObject jso);
+ 
+   public String getTravelMode(JavaScriptObject jso);
+ 
+-  public String getUnitSystem(JavaScriptObject jso);
+-
+   public JsArray<JavaScriptObject> getWaypoints(JavaScriptObject jso);
+ 
+   @FieldName("destination")
+@@ -72,13 +73,14 @@
+ 
+   @FieldName("provideRouteAlternatives")
+   public void setProvideRouteAlternatives(JavaScriptObject jso, boolean provideTripAlternatives);
++  
++  @FieldName("unitSystem")
++  public void setUnitSystem(JavaScriptObject jso, int unitSystem);
+ 
+   public void setRegion(JavaScriptObject jso, String region);
+ 
+   public void setTravelMode(JavaScriptObject jso, String travelMode);
+ 
+-  public void setUnitSystem(JavaScriptObject jso, String unitSystem);
+-
+   public void setWaypoints(JavaScriptObject jso, JsArray<JavaScriptObject> waypoints);
+ 
+ }

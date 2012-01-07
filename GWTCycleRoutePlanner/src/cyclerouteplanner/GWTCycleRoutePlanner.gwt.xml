@@ -2,6 +2,8 @@
 <module rename-to='gwtcyclerouteplanner'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
+  <!-- gwt-google-maps-v3 -->
+  <inherits name='com.google.gwt.maps.Maps' />
 
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->
@@ -12,12 +14,15 @@
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
   <!-- Other module inherits                                      -->
+  <!-- key=AIzaSyDDJw4Dt6ldTOc0Kq58C8My9orZERMKRHg& -->
+  <script src="http://maps.googleapis.com/maps/api/js?sensor=false" />
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='cyclerouteplanner.client.GWTCycleRoutePlanner'/>
+  <entry-point class='cyclerouteplanner.client.MainPage'/>
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
-  <source path='shared'/>
+
+
 
 </module>
