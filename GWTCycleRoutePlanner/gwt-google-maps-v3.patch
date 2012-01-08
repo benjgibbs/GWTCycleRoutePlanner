@@ -1,6 +1,6 @@
 diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/DirectionsRequest.java
 --- a/src/com/google/gwt/maps/client/directions/DirectionsRequest.java	Tue May 11 13:44:12 2010 +0530
-+++ b/src/com/google/gwt/maps/client/directions/DirectionsRequest.java	Sat Jan 07 20:20:56 2012 +0000
++++ b/src/com/google/gwt/maps/client/directions/DirectionsRequest.java	Sun Jan 08 16:56:45 2012 +0000
 @@ -67,7 +67,7 @@
    }
  
@@ -21,7 +21,7 @@ diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/DirectionsRequest
  
 diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/DirectionsTravelMode.java
 --- a/src/com/google/gwt/maps/client/directions/DirectionsTravelMode.java	Tue May 11 13:44:12 2010 +0530
-+++ b/src/com/google/gwt/maps/client/directions/DirectionsTravelMode.java	Sat Jan 07 20:20:56 2012 +0000
++++ b/src/com/google/gwt/maps/client/directions/DirectionsTravelMode.java	Sun Jan 08 16:56:45 2012 +0000
 @@ -24,12 +24,12 @@
    
    @Override
@@ -39,7 +39,7 @@ diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/DirectionsTravelM
  }
 diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/DirectionsUnitSystem.java
 --- a/src/com/google/gwt/maps/client/directions/DirectionsUnitSystem.java	Tue May 11 13:44:12 2010 +0530
-+++ b/src/com/google/gwt/maps/client/directions/DirectionsUnitSystem.java	Sat Jan 07 20:20:56 2012 +0000
++++ b/src/com/google/gwt/maps/client/directions/DirectionsUnitSystem.java	Sun Jan 08 16:56:45 2012 +0000
 @@ -23,13 +23,13 @@
  public class DirectionsUnitSystem implements HasDirectionsUnitSystem {
    
@@ -60,7 +60,7 @@ diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/DirectionsUnitSys
  }
 diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/HasDirectionsRequest.java
 --- a/src/com/google/gwt/maps/client/directions/HasDirectionsRequest.java	Tue May 11 13:44:12 2010 +0530
-+++ b/src/com/google/gwt/maps/client/directions/HasDirectionsRequest.java	Sat Jan 07 20:20:56 2012 +0000
++++ b/src/com/google/gwt/maps/client/directions/HasDirectionsRequest.java	Sun Jan 08 16:56:45 2012 +0000
 @@ -54,7 +54,7 @@
  
    public String getTravelMode();
@@ -81,7 +81,7 @@ diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/HasDirectionsRequ
     * Array of intermediate waypoints. Directions will be calculated from the
 diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/HasDirectionsUnitSystem.java
 --- a/src/com/google/gwt/maps/client/directions/HasDirectionsUnitSystem.java	Tue May 11 13:44:12 2010 +0530
-+++ b/src/com/google/gwt/maps/client/directions/HasDirectionsUnitSystem.java	Sat Jan 07 20:20:56 2012 +0000
++++ b/src/com/google/gwt/maps/client/directions/HasDirectionsUnitSystem.java	Sun Jan 08 16:56:45 2012 +0000
 @@ -25,12 +25,12 @@
     * Specifies that distances in the DirectionsResult should be expressed in
     * imperial units.
@@ -99,7 +99,7 @@ diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/HasDirectionsUnit
  }
 diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/impl/DirectionsRequestImpl.java
 --- a/src/com/google/gwt/maps/client/directions/impl/DirectionsRequestImpl.java	Tue May 11 13:44:12 2010 +0530
-+++ b/src/com/google/gwt/maps/client/directions/impl/DirectionsRequestImpl.java	Sat Jan 07 20:20:56 2012 +0000
++++ b/src/com/google/gwt/maps/client/directions/impl/DirectionsRequestImpl.java	Sun Jan 08 16:56:45 2012 +0000
 @@ -49,13 +49,14 @@
  
    @FieldName("provideRouteAlternatives")
@@ -135,3 +135,15 @@ diff -r 1e6b1a652135 src/com/google/gwt/maps/client/directions/impl/DirectionsRe
    public void setWaypoints(JavaScriptObject jso, JsArray<JavaScriptObject> waypoints);
  
  }
+diff -r 1e6b1a652135 src/com/google/gwt/maps/client/overlay/Polyline.java
+--- a/src/com/google/gwt/maps/client/overlay/Polyline.java	Tue May 11 13:44:12 2010 +0530
++++ b/src/com/google/gwt/maps/client/overlay/Polyline.java	Sun Jan 08 16:56:45 2012 +0000
+@@ -64,7 +64,7 @@
+ 
+   @Override
+   public void setMap(HasMap map) {
+-    PolylineImpl.impl.setMap(jso, map.getJso());
++    PolylineImpl.impl.setMap(jso, map==null ? null : map.getJso());
+   }
+ 
+   @Override

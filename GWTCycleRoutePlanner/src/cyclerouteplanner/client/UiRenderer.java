@@ -72,11 +72,11 @@ public class UiRenderer {
 		distanceField.setText(t);
 	}
 	
-	public void SubscribeToClearEvent(ClearRouteListener listener){
+	public void addClearRouteListener(ClearRouteListener listener){
 		clearRouteEventor.addListener(listener);
 	}
 	
-	public void SubscribeToRemoveLastPointEvent(RemoveLastPointListener listener){
+	public void addRemoveLastPointListener(RemoveLastPointListener listener){
 		removeLastPointEventor.addListener(listener);
 	}
 

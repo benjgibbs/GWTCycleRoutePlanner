@@ -12,11 +12,11 @@ public class MainPage implements EntryPoint {
 		routeMan.addRouteUpdatedListener(mapRenderer.getRouteUpdatedListener());
 		routeMan.addRouteUpdatedListener(uiRenderer.getRouteUpdatedListener());
 		
-		uiRenderer.SubscribeToClearEvent(routeMan.getClearRouteListener());
-		uiRenderer.SubscribeToRemoveLastPointEvent(routeMan.getRemoveLastPointListener());
+		uiRenderer.addClearRouteListener(routeMan.getClearRouteListener());
+		uiRenderer.addRemoveLastPointListener(routeMan.getRemoveLastPointListener());
 		
-		uiRenderer.SubscribeToClearEvent(mapRenderer.getClearRouteListener());
-		uiRenderer.SubscribeToRemoveLastPointEvent(mapRenderer.getRemoveLastPointListener());
+		uiRenderer.addClearRouteListener(mapRenderer.getClearRouteListener());
+		uiRenderer.addRemoveLastPointListener(mapRenderer.getRemoveLastPointListener());
 		
 		mapRenderer.onModuleLoad(routeMan);
 		uiRenderer.onModuleLoad();

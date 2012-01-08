@@ -1,6 +1,7 @@
 package cyclerouteplanner.client;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -29,7 +30,7 @@ import cyclerouteplanner.client.Events.RouteUpdatedListener;
 public class MapRenderer {
 	
 	private MapWidget mapWidget;
-	private List<Polyline> drawnRoute = new ArrayList<Polyline>();
+	private LinkedList<Polyline> drawnRoute = new LinkedList<Polyline>();
 	
 	public void onModuleLoad(MouseEventCallback clickHandler){
 		LatLng home = new LatLng(51.0747504771771, -1.3252487182617188);
@@ -76,18 +77,23 @@ public class MapRenderer {
 
 		pl.setMap(mapWidget.getMap());
 
-		drawnRoute.add(pl);
+		drawnRoute.addLast(pl);
 	}
 
 	public RouteUpdatedListener getRouteUpdatedListener() {
 		return new RouteUpdatedListener() {
 			@Override public void onEvent(RouteUpdatedEvent event) {
-				List<List<HasDirectionsStep>> routeInStages = event.getRouteInStages();
-				drawRoutePart(routeInStages.get(routeInStages.size() -1));
+				LinkedList<List<HasDirectionsStep>> routeInStages = new LinkedList<List<HasDirectionsStep>>(event.getRouteInStages());
+				if(updateIsAnAddition(routeInStages))
+					drawRoutePart(routeInStages.getLast());
 			}
 		};
 	}
 
+	private boolean updateIsAnAddition(LinkedList<List<HasDirectionsStep>> routeInStages) {
+		return routeInStages.size() > drawnRoute.size();
+	}
+	
 	ClearRouteListener getClearRouteListener(){
 		return new ClearRouteListener() {
 			@Override public void onEvent(ClearRouteEvent event) {
@@ -99,7 +105,10 @@ public class MapRenderer {
 	RemoveLastPointListener getRemoveLastPointListener(){
 		return new RemoveLastPointListener() {
 			@Override public void onEvent(RemoveLastPointEvent event) {
-				
+				if(drawnRoute.size() > 0){
+					Polyline lastLine = drawnRoute.removeLast();
+					lastLine.setMap(null);
+				}
 			}
 		};
 	}

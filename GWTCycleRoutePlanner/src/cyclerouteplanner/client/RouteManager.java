@@ -1,6 +1,7 @@
 package cyclerouteplanner.client;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -29,8 +30,8 @@ import cyclerouteplanner.client.Events.RouteUpdatedListener;
 
 public class RouteManager extends MouseEventCallback  {
 
-	private List<HasLatLng> clicks = new ArrayList<HasLatLng>();
-	private List<List<HasDirectionsStep>> route = new ArrayList<List<HasDirectionsStep>>();
+	private LinkedList<HasLatLng> clicks = new LinkedList<HasLatLng>();
+	private LinkedList<List<HasDirectionsStep>> route = new LinkedList<List<HasDirectionsStep>>();
 	private EventGenerator<RouteUpdatedEvent> routeUpdatedEventor = new EventGenerator<RouteUpdatedEvent>(); 
 	private double distance = 0.0;
 
@@ -53,7 +54,7 @@ public class RouteManager extends MouseEventCallback  {
 			return;
 
 		HasLatLng start = clicks.get(clicks.size() - 2);
-		HasLatLng end = clicks.get(clicks.size() - 1);
+		HasLatLng end = clicks.getLast();
 
 		DirectionsRequest request = new DirectionsRequest();
 		request.setOriginLatLng(start);
@@ -69,13 +70,13 @@ public class RouteManager extends MouseEventCallback  {
 		GWT.log("Requesting route");
 		dirSvc.route(request, new DirectionsCallback() {
 			@Override public void callback(HasDirectionsResult response, String status) {
-				GWT.log("RouteUpdated");
 				routeUpdated(response, status);
 			}
 		});
 	}
 	
 	private void routeUpdated(HasDirectionsResult response, String status){
+		GWT.log("RouteUpdated: " + response);
 		if (Status.Ok().equals(status)) {
 			HasDirectionsRoute newRoute = response.getRoutes().get(0);
 			List<HasDirectionsLeg> newLegs = newRoute.getLegs();
@@ -111,7 +112,20 @@ public class RouteManager extends MouseEventCallback  {
 	RemoveLastPointListener getRemoveLastPointListener(){
 		return new RemoveLastPointListener() {
 			@Override public void onEvent(RemoveLastPointEvent event) {
+				if(clicks.size() == 0)
+					return;
 				
+				clicks.removeLast();
+				
+				if(route.size() == 0)
+					return;
+				
+				List<HasDirectionsStep> lastLeg =route.removeLast();
+				for(HasDirectionsStep step : lastLeg){
+					distance -= step.getDistance().getValue();
+				}
+				
+				routeUpdatedEventor.onEvent(new RouteUpdatedEvent(route,distance));
 			}
 		};
 	}

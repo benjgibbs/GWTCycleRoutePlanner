@@ -1,6 +1,7 @@
 package cyclerouteplanner.client;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.maps.client.directions.HasDirectionsStep;
@@ -11,13 +12,13 @@ public class Events {
 	}
 	
 	public final static class RouteUpdatedEvent{
-		private final List<List<HasDirectionsStep>> routeInStages;
+		private final LinkedList<List<HasDirectionsStep>> routeInStages;
 		private final double distance;
-		public RouteUpdatedEvent(List<List<HasDirectionsStep>> routeInStages, double distance){
+		public RouteUpdatedEvent(LinkedList<List<HasDirectionsStep>> routeInStages, double distance){
 			this.distance = distance;
 			this.routeInStages = routeInStages;
 		}
-		public List<List<HasDirectionsStep>> getRouteInStages() {
+		public LinkedList<List<HasDirectionsStep>> getRouteInStages() {
 			return routeInStages;
 		}
 		public double getDistance() {
