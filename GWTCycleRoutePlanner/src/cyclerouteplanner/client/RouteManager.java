@@ -1,3 +1,19 @@
+// Cycle Root Planner
+// Copyright (C) 2012  Benjamin Gibbs
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 package cyclerouteplanner.client;
 
 import java.util.ArrayList;
@@ -89,7 +105,7 @@ public class RouteManager extends MouseEventCallback  {
 				}
 			}
 			route.add(newSteps);
-			routeUpdatedEventor.onEvent(new RouteUpdatedEvent(route, distance));
+			notifyRouteChange();
 		} else {
 			GWT.log("Failed to get route. Status: " + status);
 		}
@@ -104,7 +120,10 @@ public class RouteManager extends MouseEventCallback  {
 	ClearRouteListener getClearRouteListener(){
 		return new ClearRouteListener() {
 			@Override public void onEvent(ClearRouteEvent event) {
-				
+				clicks.clear();
+				route.clear();
+				distance = 0.0;
+				notifyRouteChange();
 			}
 		};
 	}
@@ -125,9 +144,13 @@ public class RouteManager extends MouseEventCallback  {
 					distance -= step.getDistance().getValue();
 				}
 				
-				routeUpdatedEventor.onEvent(new RouteUpdatedEvent(route,distance));
+				notifyRouteChange();
 			}
+
 		};
+	}
+	private void notifyRouteChange() {
+		routeUpdatedEventor.onEvent(new RouteUpdatedEvent(route,distance));
 	}
 
 }
