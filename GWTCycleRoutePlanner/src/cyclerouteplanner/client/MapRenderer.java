@@ -19,7 +19,10 @@ import com.google.gwt.maps.client.overlay.PolylineOptions;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
-public class MapRenderer {
+import cyclerouteplanner.client.Events.RouteUpdatedEvent;
+import cyclerouteplanner.client.Events.RouteUpdatedListener;
+
+public class MapRenderer implements RouteUpdatedListener {
 	
 	private MapWidget mapWidget;
 	private List<Polyline> drawnRoute = new ArrayList<Polyline>();
@@ -52,7 +55,7 @@ public class MapRenderer {
 		mapWidget.setPixelSize(screenWidth - 20, screenHeight - 20);
 	}
 	
-	public void drawRoutePart(List<HasDirectionsStep> newSteps) {
+	private void drawRoutePart(List<HasDirectionsStep> newSteps) {
 		List<HasLatLng> path = new ArrayList<HasLatLng>();
 		for (HasDirectionsStep step : newSteps) {
 			for (HasLatLng pathPoint : step.getPath()) {
@@ -70,5 +73,10 @@ public class MapRenderer {
 		pl.setMap(mapWidget.getMap());
 
 		drawnRoute.add(pl);
+	}
+
+	@Override public void onEvent(RouteUpdatedEvent event) {
+		List<List<HasDirectionsStep>> routeInStages = event.getRouteInStages();
+		drawRoutePart(routeInStages.get(routeInStages.size() -1));
 	}
 }

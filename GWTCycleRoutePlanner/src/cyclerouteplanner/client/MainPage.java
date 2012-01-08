@@ -9,10 +9,9 @@ public class MainPage implements EntryPoint {
 	UiRenderer uiRenderer = new UiRenderer();
 	
 	@Override public void onModuleLoad() {
-		
-		routeMan.onModuleLoad(mapRenderer, uiRenderer);
+		routeMan.addRouteUpdatedListener(mapRenderer);
+		routeMan.addRouteUpdatedListener(uiRenderer);
 		mapRenderer.onModuleLoad(routeMan);
 		uiRenderer.onModuleLoad();
-		
 	}
 }

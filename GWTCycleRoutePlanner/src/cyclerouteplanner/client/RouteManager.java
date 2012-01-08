@@ -19,11 +19,15 @@ import com.google.gwt.maps.client.directions.HasDirectionsStep;
 import com.google.gwt.maps.client.event.HasMouseEvent;
 import com.google.gwt.maps.client.event.MouseEventCallback;
 
+import cyclerouteplanner.client.Events.EventGenerator;
+import cyclerouteplanner.client.Events.RouteUpdatedEvent;
+import cyclerouteplanner.client.Events.RouteUpdatedListener;
+
 public class RouteManager extends MouseEventCallback {
 
 	private List<HasLatLng> clicks = new ArrayList<HasLatLng>();
 	private List<List<HasDirectionsStep>> route = new ArrayList<List<HasDirectionsStep>>();
-	
+	private EventGenerator<RouteUpdatedEvent> routeUpdatedEventor = new EventGenerator<RouteUpdatedEvent>(); 
 	private double distance = 0.0;
 
 	private DirectionsService dirSvc = new DirectionsService();
@@ -32,16 +36,9 @@ public class RouteManager extends MouseEventCallback {
 	private final static DirectionsTravelMode TravelMode = new DirectionsTravelMode();
 	private final static DirectionsUnitSystem UnitSystem = new DirectionsUnitSystem();
 
-	//TODO: Create a route change event and and interface sensitive to this instead of
-	// 		coupling like this.
-	private MapRenderer mapRenderer;
-	private UiRenderer uiRenderer;
-	
-	public void onModuleLoad(MapRenderer mapRenderer, UiRenderer uiRenderer){
-		this.mapRenderer = mapRenderer;
-		this.uiRenderer = uiRenderer;
+	public void addRouteUpdatedListener(RouteUpdatedListener listener){
+		routeUpdatedEventor.addListener(listener);
 	}
-	
 	
 	@Override public void callback(HasMouseEvent event) {
 		GWT.log("Mouse clicked: " + event);
@@ -87,8 +84,7 @@ public class RouteManager extends MouseEventCallback {
 				}
 			}
 			route.add(newSteps);
-			uiRenderer.routeUpdated(distance);
-			mapRenderer.drawRoutePart(newSteps);
+			routeUpdatedEventor.onEvent(new RouteUpdatedEvent(route, distance));
 		} else {
 			GWT.log("Failed to get route. Status: " + status);
 		}

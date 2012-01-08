@@ -10,4 +10,13 @@ h1 {
   position: absolute;
   top: 30px;
   left: 80px;
+  border: 0px;
+}
+
+.PanelText {
+  text-align: right;
+}
+
+.PanelButton {
+  width: 110px;
 }
