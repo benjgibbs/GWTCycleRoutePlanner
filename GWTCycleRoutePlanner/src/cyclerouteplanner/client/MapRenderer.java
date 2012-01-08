@@ -19,10 +19,14 @@ import com.google.gwt.maps.client.overlay.PolylineOptions;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
+import cyclerouteplanner.client.Events.ClearRouteEvent;
+import cyclerouteplanner.client.Events.ClearRouteListener;
+import cyclerouteplanner.client.Events.RemoveLastPointEvent;
+import cyclerouteplanner.client.Events.RemoveLastPointListener;
 import cyclerouteplanner.client.Events.RouteUpdatedEvent;
 import cyclerouteplanner.client.Events.RouteUpdatedListener;
 
-public class MapRenderer implements RouteUpdatedListener {
+public class MapRenderer {
 	
 	private MapWidget mapWidget;
 	private List<Polyline> drawnRoute = new ArrayList<Polyline>();
@@ -75,8 +79,30 @@ public class MapRenderer implements RouteUpdatedListener {
 		drawnRoute.add(pl);
 	}
 
-	@Override public void onEvent(RouteUpdatedEvent event) {
-		List<List<HasDirectionsStep>> routeInStages = event.getRouteInStages();
-		drawRoutePart(routeInStages.get(routeInStages.size() -1));
+	public RouteUpdatedListener getRouteUpdatedListener() {
+		return new RouteUpdatedListener() {
+			@Override public void onEvent(RouteUpdatedEvent event) {
+				List<List<HasDirectionsStep>> routeInStages = event.getRouteInStages();
+				drawRoutePart(routeInStages.get(routeInStages.size() -1));
+			}
+		};
 	}
+
+	ClearRouteListener getClearRouteListener(){
+		return new ClearRouteListener() {
+			@Override public void onEvent(ClearRouteEvent event) {
+				
+			}
+		};
+	}
+	
+	RemoveLastPointListener getRemoveLastPointListener(){
+		return new RemoveLastPointListener() {
+			@Override public void onEvent(RemoveLastPointEvent event) {
+				
+			}
+		};
+	}
+	
+	
 }

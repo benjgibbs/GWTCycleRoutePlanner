@@ -17,7 +17,7 @@ import cyclerouteplanner.client.Events.RemoveLastPointListener;
 import cyclerouteplanner.client.Events.RouteUpdatedEvent;
 import cyclerouteplanner.client.Events.RouteUpdatedListener;
 
-public class UiRenderer implements RouteUpdatedListener{
+public class UiRenderer {
 
 	private DisclosurePanel uiPanel;
 	private VerticalPanel vPanel;
@@ -80,7 +80,11 @@ public class UiRenderer implements RouteUpdatedListener{
 		removeLastPointEventor.addListener(listener);
 	}
 
-	@Override public void onEvent(RouteUpdatedEvent event) {
-		routeUpdated(event.getDistance());
+	public RouteUpdatedListener getRouteUpdatedListener() {
+		return new RouteUpdatedListener() {
+			@Override public void onEvent(RouteUpdatedEvent event) {
+				routeUpdated(event.getDistance());
+			}
+		};
 	}
 }

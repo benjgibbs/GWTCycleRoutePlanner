@@ -9,8 +9,15 @@ public class MainPage implements EntryPoint {
 	UiRenderer uiRenderer = new UiRenderer();
 	
 	@Override public void onModuleLoad() {
-		routeMan.addRouteUpdatedListener(mapRenderer);
-		routeMan.addRouteUpdatedListener(uiRenderer);
+		routeMan.addRouteUpdatedListener(mapRenderer.getRouteUpdatedListener());
+		routeMan.addRouteUpdatedListener(uiRenderer.getRouteUpdatedListener());
+		
+		uiRenderer.SubscribeToClearEvent(routeMan.getClearRouteListener());
+		uiRenderer.SubscribeToRemoveLastPointEvent(routeMan.getRemoveLastPointListener());
+		
+		uiRenderer.SubscribeToClearEvent(mapRenderer.getClearRouteListener());
+		uiRenderer.SubscribeToRemoveLastPointEvent(mapRenderer.getRemoveLastPointListener());
+		
 		mapRenderer.onModuleLoad(routeMan);
 		uiRenderer.onModuleLoad();
 	}

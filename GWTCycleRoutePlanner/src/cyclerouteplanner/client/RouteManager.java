@@ -19,11 +19,15 @@ import com.google.gwt.maps.client.directions.HasDirectionsStep;
 import com.google.gwt.maps.client.event.HasMouseEvent;
 import com.google.gwt.maps.client.event.MouseEventCallback;
 
+import cyclerouteplanner.client.Events.ClearRouteEvent;
+import cyclerouteplanner.client.Events.ClearRouteListener;
 import cyclerouteplanner.client.Events.EventGenerator;
+import cyclerouteplanner.client.Events.RemoveLastPointEvent;
+import cyclerouteplanner.client.Events.RemoveLastPointListener;
 import cyclerouteplanner.client.Events.RouteUpdatedEvent;
 import cyclerouteplanner.client.Events.RouteUpdatedListener;
 
-public class RouteManager extends MouseEventCallback {
+public class RouteManager extends MouseEventCallback  {
 
 	private List<HasLatLng> clicks = new ArrayList<HasLatLng>();
 	private List<List<HasDirectionsStep>> route = new ArrayList<List<HasDirectionsStep>>();
@@ -95,5 +99,21 @@ public class RouteManager extends MouseEventCallback {
 	private native void removeGwtObjectId(JavaScriptObject jso) /*-{
 		delete jso['__gwt_ObjectId'];
 	}-*/;
+	
+	ClearRouteListener getClearRouteListener(){
+		return new ClearRouteListener() {
+			@Override public void onEvent(ClearRouteEvent event) {
+				
+			}
+		};
+	}
+	
+	RemoveLastPointListener getRemoveLastPointListener(){
+		return new RemoveLastPointListener() {
+			@Override public void onEvent(RemoveLastPointEvent event) {
+				
+			}
+		};
+	}
 
 }

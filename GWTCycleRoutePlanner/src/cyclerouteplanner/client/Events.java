@@ -28,10 +28,14 @@ public class Events {
 	public interface RouteUpdatedListener extends EventListener<RouteUpdatedEvent>{ }
 	
 	public static class RemoveLastPointEvent{ }
-	public interface RemoveLastPointListener extends EventListener<RemoveLastPointEvent>{ }
+	public interface RemoveLastPointListener extends EventListener<RemoveLastPointEvent> {
+		public void onEvent(RemoveLastPointEvent event);
+	}
 
 	public static class ClearRouteEvent{ }
-	public interface ClearRouteListener extends EventListener<ClearRouteEvent>{ }
+	public interface ClearRouteListener extends EventListener<ClearRouteEvent> { 
+		public void onEvent(ClearRouteEvent event);
+	}
 	
 	public static class EventGenerator<EventT>{
 		private final List<EventListener<EventT>> listeners = new ArrayList<EventListener<EventT>>();
