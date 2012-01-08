@@ -18,12 +18,8 @@ package cyclerouteplanner.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -38,7 +34,6 @@ import cyclerouteplanner.client.Events.RouteUpdatedListener;
 
 public class UiRenderer {
 
-	private DisclosurePanel uiPanel;
 	private VerticalPanel vPanel;
 	private Label distanceField;
 	private Button undoLastPoint;
@@ -76,14 +71,10 @@ public class UiRenderer {
 		});
 		clearRoute.addStyleName("PanelButton");
 		vPanel.add(clearRoute);
+		vPanel.addStyleName("UI");
 		
-		uiPanel = new DisclosurePanel("Controls");
-		uiPanel.add(vPanel);
-		uiPanel.setOpen(true);
-		
-		RootPanel uiDiv = RootPanel.get("ui");
-		uiDiv.setStyleName("UI");
-		uiDiv.add(uiPanel);
+		RootPanel canvas = RootPanel.get("map_canvas");
+		canvas.add(vPanel);
 		
 	}
 	

@@ -58,7 +58,7 @@ public class MapRenderer {
 		options.setNavigationControl(true);
 		options.setMapTypeControl(true);
 		mapWidget = new MapWidget(options);
-
+		
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override public void onResize(ResizeEvent event) {
 				fillTheScreen(event.getWidth(), event.getHeight());
@@ -67,13 +67,13 @@ public class MapRenderer {
 
 		GWT.log("Adding click handler.");
 		Event.addListener(mapWidget.getMap(), "click",clickHandler);
-
-		fillTheScreen(Window.getClientWidth(), Window.getClientHeight());
+		mapWidget.addStyleName("Map");
 		RootPanel.get("map_canvas").add(mapWidget);
+		fillTheScreen(Window.getClientWidth(), Window.getClientHeight());
 	}
 	
 	private void fillTheScreen(int screenWidth, int screenHeight) {
-		mapWidget.setPixelSize(screenWidth - 20, screenHeight - 40);
+		mapWidget.setPixelSize(screenWidth, screenHeight);
 	}
 	
 	private void drawRoutePart(List<HasDirectionsStep> newSteps) {
