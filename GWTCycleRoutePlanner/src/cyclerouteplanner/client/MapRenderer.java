@@ -73,7 +73,7 @@ public class MapRenderer {
 	}
 	
 	private void fillTheScreen(int screenWidth, int screenHeight) {
-		mapWidget.setPixelSize(screenWidth - 20, screenHeight - 20);
+		mapWidget.setPixelSize(screenWidth - 20, screenHeight - 40);
 	}
 	
 	private void drawRoutePart(List<HasDirectionsStep> newSteps) {
@@ -99,7 +99,7 @@ public class MapRenderer {
 	public RouteUpdatedListener getRouteUpdatedListener() {
 		return new RouteUpdatedListener() {
 			@Override public void onEvent(RouteUpdatedEvent event) {
-				LinkedList<List<HasDirectionsStep>> routeInStages = new LinkedList<List<HasDirectionsStep>>(event.getRouteInStages());
+				LinkedList<List<HasDirectionsStep>> routeInStages = event.getRouteInStages();
 				if(updateIsAnAddition(routeInStages))
 					drawRoutePart(routeInStages.getLast());
 			}
@@ -130,6 +130,4 @@ public class MapRenderer {
 			}
 		};
 	}
-	
-	
 }

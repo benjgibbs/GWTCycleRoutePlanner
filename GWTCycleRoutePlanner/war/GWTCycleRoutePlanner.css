@@ -7,10 +7,10 @@ h1 {
 }
 
 .UI {
-  position: absolute;
+  position: fixed;
   top: 30px;
   left: 80px;
-  border: 0px;
+  border: 10px;
 }
 
 .PanelText {
@@ -18,5 +18,5 @@ h1 {
 }
 
 .PanelButton {
-  width: 110px;
+  width: 130px;
 }

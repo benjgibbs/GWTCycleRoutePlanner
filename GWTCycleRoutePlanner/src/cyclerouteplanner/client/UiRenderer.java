@@ -18,7 +18,10 @@ package cyclerouteplanner.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Label;
@@ -81,6 +84,7 @@ public class UiRenderer {
 		RootPanel uiDiv = RootPanel.get("ui");
 		uiDiv.setStyleName("UI");
 		uiDiv.add(uiPanel);
+		
 	}
 	
 	private void routeUpdated(double distanceM){

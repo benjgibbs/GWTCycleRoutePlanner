@@ -152,5 +152,4 @@ public class RouteManager extends MouseEventCallback  {
 	private void notifyRouteChange() {
 		routeUpdatedEventor.onEvent(new RouteUpdatedEvent(route,distance));
 	}
-
 }
