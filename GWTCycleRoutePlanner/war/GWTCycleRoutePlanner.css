@@ -5,3 +5,9 @@ h1 {
   margin: 40px 0px 70px;
   text-align: center;
 }
+
+.UI {
+  position: absolute;
+  top: 30px;
+  left: 80px;
+}
