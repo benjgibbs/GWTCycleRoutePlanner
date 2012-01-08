@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -34,10 +35,12 @@ import cyclerouteplanner.client.Events.RouteUpdatedListener;
 
 public class UiRenderer {
 
+	private PopupPanel popupPanel;
 	private VerticalPanel vPanel;
 	private Label distanceField;
 	private Button undoLastPoint;
 	private Button clearRoute;
+	
 	
 	private final static NumberFormat DistanceFormatter = NumberFormat.getFormat("#,##0.##");
 	
@@ -71,11 +74,12 @@ public class UiRenderer {
 		});
 		clearRoute.addStyleName("PanelButton");
 		vPanel.add(clearRoute);
-		vPanel.addStyleName("UI");
-		
-		RootPanel canvas = RootPanel.get("map_canvas");
-		canvas.add(vPanel);
-		
+
+		popupPanel = new PopupPanel();
+		popupPanel.setStyleName("UI", true);
+		popupPanel.add(vPanel);
+		popupPanel.setPopupPosition(100, 20);
+		popupPanel.show();
 	}
 	
 	private void routeUpdated(double distanceM){
