@@ -66,8 +66,10 @@ public class RouteManager extends MouseEventCallback  {
 		HasLatLng latLng = event.getLatLng();
 		clicks.add(latLng);
 
-		if (clicks.size() < 2)
+		if (clicks.size() < 2) {
+			notifyRouteChange();
 			return;
+		}
 
 		HasLatLng start = clicks.get(clicks.size() - 2);
 		HasLatLng end = clicks.getLast();
@@ -131,13 +133,16 @@ public class RouteManager extends MouseEventCallback  {
 	RemoveLastPointListener getRemoveLastPointListener(){
 		return new RemoveLastPointListener() {
 			@Override public void onEvent(RemoveLastPointEvent event) {
+				
 				if(clicks.size() == 0)
 					return;
 				
 				clicks.removeLast();
 				
-				if(route.size() == 0)
+				if(route.size() == 0) {
+					notifyRouteChange();
 					return;
+				}
 				
 				List<HasDirectionsStep> lastLeg =route.removeLast();
 				for(HasDirectionsStep step : lastLeg){
@@ -150,6 +155,7 @@ public class RouteManager extends MouseEventCallback  {
 		};
 	}
 	private void notifyRouteChange() {
-		routeUpdatedEventor.onEvent(new RouteUpdatedEvent(route,distance));
+		HasLatLng start = (clicks.size() > 0) ? clicks.get(0) : null;
+		routeUpdatedEventor.onEvent(new RouteUpdatedEvent(start,route,distance));
 	}
 }

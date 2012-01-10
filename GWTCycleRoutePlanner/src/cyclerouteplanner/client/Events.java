@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.maps.client.base.HasLatLng;
 import com.google.gwt.maps.client.directions.HasDirectionsStep;
 
 public class Events {
@@ -30,15 +31,20 @@ public class Events {
 	public final static class RouteUpdatedEvent{
 		private final LinkedList<List<HasDirectionsStep>> routeInStages;
 		private final double distance;
-		public RouteUpdatedEvent(LinkedList<List<HasDirectionsStep>> routeInStages, double distance){
+		private final HasLatLng start;
+		public RouteUpdatedEvent(HasLatLng start, LinkedList<List<HasDirectionsStep>> routeInStages, double distance){
 			this.distance = distance;
 			this.routeInStages = routeInStages;
+			this.start = start;
 		}
 		public LinkedList<List<HasDirectionsStep>> getRouteInStages() {
 			return routeInStages;
 		}
 		public double getDistance() {
 			return distance;
+		}
+		public HasLatLng getStart() {
+			return start;
 		}
 	}
 
