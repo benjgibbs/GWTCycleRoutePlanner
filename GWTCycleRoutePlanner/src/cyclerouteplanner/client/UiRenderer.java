@@ -39,6 +39,7 @@ public class UiRenderer {
 	private Label distanceField;
 	private Button undoLastPoint;
 	private Button clearRoute;
+	private Button showGpx;
 	
 	
 	private final static NumberFormat DistanceFormatter = NumberFormat.getFormat("#,##0.##");
@@ -46,7 +47,7 @@ public class UiRenderer {
 	private EventGenerator<ClearRouteEvent> clearRouteEventor = new EventGenerator<ClearRouteEvent>();
 	private EventGenerator<RemoveLastPointEvent> removeLastPointEventor = new EventGenerator<RemoveLastPointEvent>();
 	
-	public void onModuleLoad(){
+	public void onModuleLoad(final RouteManager routeMan){
 		
 		vPanel = new VerticalPanel();
 		vPanel.setStyleName("Panel");
@@ -74,6 +75,16 @@ public class UiRenderer {
 		clearRoute.addStyleName("PanelButton");
 		vPanel.add(clearRoute);
 
+		showGpx = new Button("Show GPX");
+		showGpx.addClickHandler(new ClickHandler() {
+			@Override public void onClick(ClickEvent event) {
+				GpxCreator creator = new GpxCreator(routeMan.getRoute());
+				new GpxWindow(creator.getRouteString()).show();
+			}
+		});
+		showGpx.addStyleName("PanelButton");
+		vPanel.add(showGpx);
+		
 		popupPanel = new PopupPanel();
 		popupPanel.setStyleName("UI", true);
 		popupPanel.add(vPanel);

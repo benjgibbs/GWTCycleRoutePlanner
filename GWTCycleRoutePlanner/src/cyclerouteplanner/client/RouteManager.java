@@ -113,6 +113,19 @@ public class RouteManager extends MouseEventCallback  {
 		}
 	}
 	
+	public List<LatLng> getRoute()
+	{
+		List<LatLng> points = new ArrayList<LatLng>();
+		for(List<HasDirectionsStep> part : route){
+			for(HasDirectionsStep step : part){
+				for(HasLatLng point : step.getPath()){
+					points.add(new LatLng(point.getLatitude() , point.getLongitude()));
+				}
+			}
+		}
+		return points;
+	}
+	
 
 	// Workaround
 	private native void removeGwtObjectId(JavaScriptObject jso) /*-{

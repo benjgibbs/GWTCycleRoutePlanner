@@ -35,6 +35,6 @@ public class MainPage implements EntryPoint {
 		uiRenderer.addRemoveLastPointListener(mapRenderer.getRemoveLastPointListener());
 		
 		mapRenderer.onModuleLoad(routeMan);
-		uiRenderer.onModuleLoad();
+		uiRenderer.onModuleLoad(routeMan);
 	}
 }
