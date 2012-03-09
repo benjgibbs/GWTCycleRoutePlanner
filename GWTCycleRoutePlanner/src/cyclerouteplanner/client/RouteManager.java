@@ -158,4 +158,9 @@ public class RouteManager extends MouseEventCallback  {
 		HasLatLng start = (clicks.size() > 0) ? clicks.get(0) : null;
 		routeUpdatedEventor.onEvent(new RouteUpdatedEvent(start,route,distance));
 	}
+	
+	public String createGpxRoute(){
+			
+		return ""; 
+	}
 }
