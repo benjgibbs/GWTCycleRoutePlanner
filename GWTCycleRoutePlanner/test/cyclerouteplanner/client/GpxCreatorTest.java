@@ -6,28 +6,20 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
-import cyclerouteplanner.client.gpx.GpxType;
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.maps.client.base.HasLatLng;
+import com.google.gwt.maps.client.base.LatLng;
 
-public class GpxCreatorTest {
+public class GpxCreatorTest extends GWTTestCase {
 
-	
-	
 	@Test
-	public void testThatWeCanCreateARouteWithOnePoint() throws JAXBException {
+	public void testThatWeCanCreateARouteWithOnePoint(){
 		
-		List<LatLng> points = new ArrayList<LatLng>();
+		List<HasLatLng> points = new ArrayList<HasLatLng>();
 		points.add(new LatLng(1.0, 1.0));
-		
-		GpxCreator creator = new GpxCreator(points);
-		GpxType gpx = creator.getRoute();
-				
-		
-		assertThat(gpx.getRte().size(), equalTo(1));
-		
 		
 		String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"+
 			"<gpx xmlns=\"http://www.topografix.com/GPX/1/1\">\n"+
@@ -35,11 +27,12 @@ public class GpxCreatorTest {
 			"        <rtept lon=\"1\" lat=\"1\"/>\n"+
 			"    </rte>\n"+
 			"</gpx>\n";
-		assertThat(creator.getRouteString(), equalTo(expected));
+
+		assertThat(GpxCreator.getRouteString(points), equalTo(expected));
 	}
-	
-	
 
-
+	@Override public String getModuleName() {
+		return "cyclerouteplanner.GWTCycleRoutePlanner";
+	}
 	
 }

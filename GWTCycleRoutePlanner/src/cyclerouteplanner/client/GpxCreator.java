@@ -1,48 +1,28 @@
 package cyclerouteplanner.client;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import cyclerouteplanner.client.gpx.GpxType;
-import cyclerouteplanner.client.gpx.ObjectFactory;
-import cyclerouteplanner.client.gpx.RteType;
-import cyclerouteplanner.client.gpx.WptType;
+import com.google.gwt.maps.client.base.HasLatLng;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Element;
+import com.google.gwt.xml.client.XMLParser;
 
 public class GpxCreator
 {
-	final GpxType gpx; 
-	final ObjectFactory factory = new ObjectFactory();
-	
-	public GpxCreator(List<LatLng> points){
-		gpx = factory.createGpxType();
-		RteType rte = factory.createRteType();
-		List<WptType> rtept = rte.getRtept();
-		for(LatLng p : points){
-			rtept.add(p.toWpt(factory));
+		
+	public static String getRouteString(List<HasLatLng> points){
+		Document doc = XMLParser.createDocument();
+		Element gpx = doc.createElement("gpx");
+		doc.appendChild(gpx);
+		Element rte = doc.createElement("rte");
+		gpx.appendChild(rte);
+		for(HasLatLng p : points){
+			Element rtept = doc.createElement("rtept");
+			rtept.setAttribute("lat", Double.toString(p.getLatitude()));
+			rtept.setAttribute("lon", Double.toString(p.getLongitude()));
+			rte.appendChild(rtept);
 		}
-		gpx.getRte().add(rte);
-	}
-	
-	public GpxType getRoute() {
-		return gpx;
-	}
-	
-	public String getRouteString(){
-		try {
-			JAXBElement<GpxType> createdGpx = factory.createGpx(gpx);
-			JAXBContext jc = JAXBContext.newInstance("cyclerouteplanner.client.gpx");
-			Marshaller marshaller = jc.createMarshaller();
-			marshaller.setProperty("jaxb.formatted.output",Boolean.TRUE);
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			marshaller.marshal(createdGpx, out);
-			return out.toString();
-		} catch (JAXBException e) {
-			return "Error: " + e;
-		}
+		
+		return doc.toString();
 	}
 }

@@ -22,10 +22,8 @@
   <entry-point class='cyclerouteplanner.client.MainPage'/>
 
   <!-- Specify the paths for translatable code                    -->
-  <source path='client'/>
+  <source path="client" excludes="**/*Test.java"/>
 
-  <source path='cyclerouteplanner.client.gpx'/>
-  <source path='cyclerouteplanner.client'/>
-
+  <inherits name="com.google.gwt.xml.XML" />
 
 </module>
