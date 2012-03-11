@@ -78,7 +78,7 @@ public class UiRenderer {
 		showGpx = new Button("Show GPX");
 		showGpx.addClickHandler(new ClickHandler() {
 			@Override public void onClick(ClickEvent event) {
-				new GpxWindow(GpxCreator.getRouteString(routeMan.getRoute())).show();
+				new GpxWindow(GpxCreator.getRouteString("Cycleroute", routeMan.getRoute())).show();
 			}
 		});
 		showGpx.addStyleName("PanelButton");

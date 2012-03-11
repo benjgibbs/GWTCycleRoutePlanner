@@ -28,7 +28,7 @@ public class GpxCreatorTest extends GWTTestCase {
 			"    </rte>\n"+
 			"</gpx>\n";
 
-		assertThat(GpxCreator.getRouteString(points), equalTo(expected));
+		assertThat(GpxCreator.getRouteString("Test",points), equalTo(expected));
 	}
 
 	@Override public String getModuleName() {
