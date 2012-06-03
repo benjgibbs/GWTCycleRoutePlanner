@@ -15,6 +15,9 @@ public class GpxCreator
 	public static String getRouteString(String name, List<HasLatLng> points){
 		Document doc = XMLParser.createDocument();
 		Element gpx = doc.createElement("gpx");
+		gpx.setAttribute("xmlns", "http://www.topografix.com/GPX/1/1");
+		gpx.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		gpx.setAttribute("xsi:schemaLocation", "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
 		doc.appendChild(gpx);
 		Element rte = doc.createElement("rte");
 		rte.setAttribute("Name", name);
