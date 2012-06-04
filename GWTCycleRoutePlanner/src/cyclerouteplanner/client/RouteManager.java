@@ -74,8 +74,10 @@ public class RouteManager implements ClickHandler  {
 		DirectionsRequest request = DirectionsRequest.create();
 		request.setOrigin(start);
 		request.setDestination(end);
-		request.setTravelMode(TravelMode.BICYCLING);
+		request.setTravelMode(TravelMode.DRIVING);
 		request.setUnitSystem(UnitSystem.METRIC);
+		
+		
 		request.setProvideRouteAlternatives(false);
 
 //		if (!GWT.isScript()) {
@@ -92,7 +94,7 @@ public class RouteManager implements ClickHandler  {
 	
 	private void routeUpdated(DirectionsResult response, DirectionsStatus status){
 		GWT.log("RouteUpdated: " + response);
-		if (DirectionsStatus.OK.equals(status)) {
+		if (DirectionsStatus.OK == status) {
 			DirectionsRoute newRoute = response.getRoutes().get(0);
 			JsArray<DirectionsLeg> newLegs = newRoute.getLegs();
 			List<DirectionsStep> newSteps = new ArrayList<DirectionsStep>();
@@ -107,7 +109,7 @@ public class RouteManager implements ClickHandler  {
 			route.add(newSteps);
 			notifyRouteChange();
 		} else {
-			GWT.log("Failed to get route. Status: " + status);
+			GWT.log("Failed to get route. Status: " + status.getValue());
 		}
 	}
 	
