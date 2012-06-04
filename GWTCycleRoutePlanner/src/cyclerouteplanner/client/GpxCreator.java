@@ -2,17 +2,17 @@ package cyclerouteplanner.client;
 
 import java.util.List;
 
-import com.google.gwt.maps.client.base.HasLatLng;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
+import com.google.maps.gwt.client.LatLng;
 
 public class GpxCreator
 {
-	public static String getRouteString(String name, List<HasLatLng> points){
+	public static String getRouteString(String name, List<LatLng> points){
 		Document doc = XMLParser.createDocument();
 		Element gpx = doc.createElement("gpx");
 		gpx.setAttribute("xmlns", "http://www.topografix.com/GPX/1/1");
@@ -22,10 +22,10 @@ public class GpxCreator
 		Element rte = doc.createElement("rte");
 		rte.setAttribute("Name", name);
 		gpx.appendChild(rte);
-		for(HasLatLng p : points){
+		for(LatLng p : points){
 			Element rtept = doc.createElement("rtept");
-			rtept.setAttribute("lat", Double.toString(p.getLatitude()));
-			rtept.setAttribute("lon", Double.toString(p.getLongitude()));
+			rtept.setAttribute("lat", Double.toString(p.lat()));
+			rtept.setAttribute("lon", Double.toString(p.lng()));
 			rte.appendChild(rtept);
 		}
 		return format(doc);

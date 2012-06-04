@@ -22,19 +22,19 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.maps.client.base.HasLatLng;
-import com.google.gwt.maps.client.directions.DirectionsCallback;
-import com.google.gwt.maps.client.directions.DirectionsRequest;
-import com.google.gwt.maps.client.directions.DirectionsService;
-import com.google.gwt.maps.client.directions.DirectionsStatus;
-import com.google.gwt.maps.client.directions.DirectionsTravelMode;
-import com.google.gwt.maps.client.directions.DirectionsUnitSystem;
-import com.google.gwt.maps.client.directions.HasDirectionsLeg;
-import com.google.gwt.maps.client.directions.HasDirectionsResult;
-import com.google.gwt.maps.client.directions.HasDirectionsRoute;
-import com.google.gwt.maps.client.directions.HasDirectionsStep;
-import com.google.gwt.maps.client.event.HasMouseEvent;
-import com.google.gwt.maps.client.event.MouseEventCallback;
+import com.google.gwt.core.client.JsArray;
+import com.google.maps.gwt.client.DirectionsLeg;
+import com.google.maps.gwt.client.DirectionsRequest;
+import com.google.maps.gwt.client.DirectionsResult;
+import com.google.maps.gwt.client.DirectionsRoute;
+import com.google.maps.gwt.client.DirectionsService;
+import com.google.maps.gwt.client.DirectionsStatus;
+import com.google.maps.gwt.client.DirectionsStep;
+import com.google.maps.gwt.client.GoogleMap.ClickHandler;
+import com.google.maps.gwt.client.LatLng;
+import com.google.maps.gwt.client.MouseEvent;
+import com.google.maps.gwt.client.TravelMode;
+import com.google.maps.gwt.client.UnitSystem;
 
 import cyclerouteplanner.client.Events.ClearRouteEvent;
 import cyclerouteplanner.client.Events.ClearRouteListener;
@@ -44,26 +44,23 @@ import cyclerouteplanner.client.Events.RemoveLastPointListener;
 import cyclerouteplanner.client.Events.RouteUpdatedEvent;
 import cyclerouteplanner.client.Events.RouteUpdatedListener;
 
-public class RouteManager extends MouseEventCallback  {
+public class RouteManager implements ClickHandler  {
 
-	private LinkedList<HasLatLng> clicks = new LinkedList<HasLatLng>();
-	private LinkedList<List<HasDirectionsStep>> route = new LinkedList<List<HasDirectionsStep>>();
+	private LinkedList<LatLng> clicks = new LinkedList<LatLng>();
+	private LinkedList<List<DirectionsStep>> route = new LinkedList<List<DirectionsStep>>();
 	private EventGenerator<RouteUpdatedEvent> routeUpdatedEventor = new EventGenerator<RouteUpdatedEvent>(); 
 	private double distance = 0.0;
 
-	private DirectionsService dirSvc = new DirectionsService();
+	private DirectionsService dirSvc = DirectionsService.create();
 	
-	private final static DirectionsStatus Status = new DirectionsStatus();
-	private final static DirectionsTravelMode TravelMode = new DirectionsTravelMode();
-	private final static DirectionsUnitSystem UnitSystem = new DirectionsUnitSystem();
-
 	public void addRouteUpdatedListener(RouteUpdatedListener listener){
 		routeUpdatedEventor.addListener(listener);
 	}
 	
-	@Override public void callback(HasMouseEvent event) {
+	@Override public void handle(MouseEvent event) {
+	
 		GWT.log("Mouse clicked: " + event);
-		HasLatLng latLng = event.getLatLng();
+		LatLng latLng = event.getLatLng();
 		clicks.add(latLng);
 
 		if (clicks.size() < 2) {
@@ -71,39 +68,40 @@ public class RouteManager extends MouseEventCallback  {
 			return;
 		}
 
-		HasLatLng start = clicks.get(clicks.size() - 2);
-		HasLatLng end = clicks.getLast();
+		LatLng start = clicks.get(clicks.size() - 2);
+		LatLng end = clicks.getLast();
 
-		DirectionsRequest request = new DirectionsRequest();
-		request.setOriginLatLng(start);
-		request.setDestinationLatLng(end);
-		request.setTravelMode(TravelMode.Driving());
-		request.setUnitSystem(UnitSystem.Metric());
+		DirectionsRequest request = DirectionsRequest.create();
+		request.setOrigin(start);
+		request.setDestination(end);
+		request.setTravelMode(TravelMode.BICYCLING);
+		request.setUnitSystem(UnitSystem.METRIC);
 		request.setProvideRouteAlternatives(false);
 
-		if (!GWT.isScript()) {
-			removeGwtObjectId(request.getJso());
-		}
+//		if (!GWT.isScript()) {
+//			removeGwtObjectId(request.getJso());
+//		}
 
 		GWT.log("Requesting route");
-		dirSvc.route(request, new DirectionsCallback() {
-			@Override public void callback(HasDirectionsResult response, String status) {
+		dirSvc.route(request, new DirectionsService.Callback() {
+			@Override public void handle(DirectionsResult response, DirectionsStatus status) {
 				routeUpdated(response, status);
 			}
 		});
 	}
 	
-	private void routeUpdated(HasDirectionsResult response, String status){
+	private void routeUpdated(DirectionsResult response, DirectionsStatus status){
 		GWT.log("RouteUpdated: " + response);
-		if (Status.Ok().equals(status)) {
-			HasDirectionsRoute newRoute = response.getRoutes().get(0);
-			List<HasDirectionsLeg> newLegs = newRoute.getLegs();
-
-			List<HasDirectionsStep> newSteps = new ArrayList<HasDirectionsStep>();
-			for (HasDirectionsLeg leg : newLegs) {
+		if (DirectionsStatus.OK.equals(status)) {
+			DirectionsRoute newRoute = response.getRoutes().get(0);
+			JsArray<DirectionsLeg> newLegs = newRoute.getLegs();
+			List<DirectionsStep> newSteps = new ArrayList<DirectionsStep>();
+			for(int j =0; j < newLegs.length(); ++j){
+				DirectionsLeg leg = newLegs.get(j);
 				distance += leg.getDistance().getValue();
-				for (HasDirectionsStep newStep : leg.getSteps()) {
-					newSteps.add(newStep);
+				JsArray<DirectionsStep> steps = leg.getSteps();
+				for (int i = 0; i < steps.length(); i++) {
+					newSteps.add(steps.get(i));
 				}
 			}
 			route.add(newSteps);
@@ -113,12 +111,15 @@ public class RouteManager extends MouseEventCallback  {
 		}
 	}
 	
-	public List<HasLatLng> getRoute()
+	public List<LatLng> getRoute()
 	{
-		List<HasLatLng> points = new ArrayList<HasLatLng>();
-		for(List<HasDirectionsStep> part : route){
-			for(HasDirectionsStep step : part){
-				points.addAll(step.getPath());
+		List<LatLng> points = new ArrayList<LatLng>();
+		for(List<DirectionsStep> part : route){
+			for(DirectionsStep step : part){
+				JsArray<LatLng> path = step.getPath();
+				for(int i = 0; i < path.length(); i++){
+					points.add(path.get(i));	
+				}
 			}
 		}
 		return points;
@@ -155,8 +156,8 @@ public class RouteManager extends MouseEventCallback  {
 					return;
 				}
 				
-				List<HasDirectionsStep> lastLeg =route.removeLast();
-				for(HasDirectionsStep step : lastLeg){
+				List<DirectionsStep> lastLeg =route.removeLast();
+				for(DirectionsStep step : lastLeg){
 					distance -= step.getDistance().getValue();
 				}
 				
@@ -166,7 +167,9 @@ public class RouteManager extends MouseEventCallback  {
 		};
 	}
 	private void notifyRouteChange() {
-		HasLatLng start = (clicks.size() > 0) ? clicks.get(0) : null;
+		LatLng start = (clicks.size() > 0) ? clicks.get(0) : null;
 		routeUpdatedEventor.onEvent(new RouteUpdatedEvent(start,route,distance));
 	}
+
+
 }

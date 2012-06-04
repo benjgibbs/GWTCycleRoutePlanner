@@ -16,28 +16,26 @@
 
 package cyclerouteplanner.client;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.maps.client.MapOptions;
-import com.google.gwt.maps.client.MapTypeId;
-import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.base.HasLatLng;
-import com.google.gwt.maps.client.base.LatLng;
-import com.google.gwt.maps.client.directions.HasDirectionsStep;
-import com.google.gwt.maps.client.event.Event;
-import com.google.gwt.maps.client.event.MouseEventCallback;
-import com.google.gwt.maps.client.overlay.HasMarkerOptions;
-import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.maps.client.overlay.MarkerOptions;
-import com.google.gwt.maps.client.overlay.Polyline;
-import com.google.gwt.maps.client.overlay.PolylineOptions;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.maps.gwt.client.DirectionsStep;
+import com.google.maps.gwt.client.GoogleMap;
+import com.google.maps.gwt.client.GoogleMap.ClickHandler;
+import com.google.maps.gwt.client.LatLng;
+import com.google.maps.gwt.client.MVCArray;
+import com.google.maps.gwt.client.MapOptions;
+import com.google.maps.gwt.client.MapTypeId;
+import com.google.maps.gwt.client.Marker;
+import com.google.maps.gwt.client.MarkerOptions;
+import com.google.maps.gwt.client.Polyline;
+import com.google.maps.gwt.client.PolylineOptions;
 
 import cyclerouteplanner.client.Events.ClearRouteEvent;
 import cyclerouteplanner.client.Events.ClearRouteListener;
@@ -48,20 +46,27 @@ import cyclerouteplanner.client.Events.RouteUpdatedListener;
 
 public class MapRenderer {
 
-	private MapWidget mapWidget;
+	private GoogleMap mapWidget;
 	private LinkedList<Polyline> drawnRoute = new LinkedList<Polyline>();
 	private Marker startMarker;
+	private RootPanel mapCanvas;
 
-	public void onModuleLoad(MouseEventCallback clickHandler) {
-		LatLng home = new LatLng(51.0747504771771, -1.3252487182617188);
-		final MapOptions options = new MapOptions();
+	public void onModuleLoad(ClickHandler clickHandler) {
+		LatLng home = LatLng.create(51.0747504771771, -1.3252487182617188);
+		
+		final MapOptions options = MapOptions.create();
 		options.setZoom(14);
 		options.setCenter(home);
-		options.setMapTypeId(new MapTypeId().getRoadmap());
+		options.setMapTypeId(MapTypeId.ROADMAP);
 		options.setDraggable(true);
-		options.setNavigationControl(true);
+		//options.setNavigationControl(true);
 		options.setMapTypeControl(true);
-		mapWidget = new MapWidget(options);
+		
+		
+		mapCanvas = RootPanel.get("map_canvas");
+		mapCanvas.addStyleName("Map");
+		
+		mapWidget = GoogleMap.create(mapCanvas.getElement(),options);
 
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override public void onResize(ResizeEvent event) {
@@ -70,33 +75,30 @@ public class MapRenderer {
 		});
 
 		GWT.log("Adding click handler.");
-		Event.addListener(mapWidget.getMap(), "click", clickHandler);
-		mapWidget.addStyleName("Map");
-		RootPanel.get("map_canvas").add(mapWidget);
+		mapWidget.addClickListener(clickHandler);
 		fillTheScreen(Window.getClientWidth(), Window.getClientHeight());
 	}
 
 	private void fillTheScreen(int screenWidth, int screenHeight) {
-		mapWidget.setPixelSize(screenWidth, screenHeight);
+		mapCanvas.setPixelSize(screenWidth, screenHeight);
 	}
 
-	private void drawRoutePart(List<HasDirectionsStep> newSteps) {
-		List<HasLatLng> path = new ArrayList<HasLatLng>();
-		for (HasDirectionsStep step : newSteps) {
-			for (HasLatLng pathPoint : step.getPath()) {
-				path.add(pathPoint);
+	private void drawRoutePart(List<DirectionsStep> newSteps) {
+		MVCArray<LatLng> path = MVCArray.create();
+		for (DirectionsStep step : newSteps) {
+			JsArray<LatLng> path2 = step.getPath(); 
+			for (int i = 0; i < path2.length(); i++) {
+				path.push(path2.get(i));
 			}
 		}
-		Polyline pl = new Polyline();
-		PolylineOptions options = new PolylineOptions();
+		
+		PolylineOptions options = PolylineOptions.create();
 		options.setStrokeColor("red");
 		options.setStrokeWeight(10);
 		options.setStrokeOpacity(0.6);
 		options.setPath(path);
-		pl.setOptions(options);
-
-		pl.setMap(mapWidget.getMap());
-
+		Polyline pl = Polyline.create(options);
+		pl.setMap(mapWidget);
 		drawnRoute.addLast(pl);
 	}
 
@@ -104,32 +106,32 @@ public class MapRenderer {
 		return new RouteUpdatedListener() {
 			@Override public void onEvent(RouteUpdatedEvent event) {
 				setStartMarker(event.getStart());
-				LinkedList<List<HasDirectionsStep>> routeInStages = event.getRouteInStages();
+				LinkedList<List<DirectionsStep>> routeInStages = event.getRouteInStages();
 				if (updateIsAnAddition(routeInStages))
 					drawRoutePart(routeInStages.getLast());
 			}
 		};
 	}
 
-	private void setStartMarker(HasLatLng startPos) {
+	private void setStartMarker(LatLng startPos) {
 		if (startMarker == null) {
 			if (startPos != null) {
-				HasMarkerOptions options = new MarkerOptions();
+				MarkerOptions options = MarkerOptions.create();
 				options.setPosition(startPos);
 				options.setTitle("Start");
-				options.setMap(mapWidget.getMap());
+				options.setMap(mapWidget);
 				options.setVisible(true);
-				startMarker = new Marker(options);
+				startMarker = Marker.create(options);
 			}
 		} else {
 			if (startPos == null) {
-				startMarker.setMap(null);
+				startMarker.setMap((GoogleMap)null);
 				startMarker = null;
 			}
 		}
 	}
 
-	private boolean updateIsAnAddition(LinkedList<List<HasDirectionsStep>> routeInStages) {
+	private boolean updateIsAnAddition(LinkedList<List<DirectionsStep>> routeInStages) {
 		return routeInStages.size() > drawnRoute.size();
 	}
 
@@ -139,7 +141,7 @@ public class MapRenderer {
 				while (!drawnRoute.isEmpty()) {
 					drawnRoute.removeLast().setMap(null);
 				}
-				startMarker.setMap(null);
+				startMarker.setMap((GoogleMap)null);
 			}
 		};
 	}
